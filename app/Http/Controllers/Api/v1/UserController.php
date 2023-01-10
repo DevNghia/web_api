@@ -16,9 +16,9 @@ class UserController extends Controller
      */
     public function index()
     {
-        return new UserCollection(User::paginate());
+        $user = User::all();
+        return view('layouts.user.index')->with(compact('user'));
     }
-
     /**
      * Show the form for creating a new resource.
      *
@@ -46,9 +46,11 @@ class UserController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function show($id)
+    public function show($user)
     {
-        //
+        $users = User::find($user);
+
+        return view('layouts.user.show')->with(compact('users'));
     }
 
     /**
@@ -69,9 +71,14 @@ class UserController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function update(Request $request, $id)
+    public function update(Request $request, $user)
     {
-        //
+        $data = $request->all();
+        $users = User::find($user);
+        $users->name = $data['name'];
+        $users->email = $data['email'];
+        $users->save();
+        return redirect()->route('user.index')->with('success', 'User Updated Successfully');
     }
 
     /**
@@ -80,8 +87,10 @@ class UserController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function destroy($id)
+    public function destroy($user)
     {
-        //
+        $users =  User::find($user);
+        $users->delete();
+        return redirect()->back();
     }
 }

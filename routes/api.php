@@ -19,7 +19,7 @@ Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
 });
 
 Route::prefix('v1')->group(function () {
-    Route::resource('/User', 'App\Http\Controllers\Api\v1\UserController')->only(['index']);
+    Route::resource('/user', 'App\Http\Controllers\Api\v1\UserController');
     Route::resource('/category', 'App\Http\Controllers\Api\v1\CategoryPostController');
 });
 Route::prefix('v2')->group(function () {

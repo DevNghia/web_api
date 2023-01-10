@@ -15,7 +15,8 @@
                     @endif
 
                     <a href="{{route('category.create')}}" class="btn btn-primary w-100 mb-2">Thêm danh mục bài viết</a>
-                    <button class="btn btn-success w-100 mb-2">Thêm bài viết</button>
+                    <a href="{{route('category.index')}}" class="btn btn-primary w-100 mb-2">Liệt kê danh mục bài viết</a>
+                    <a href="{{route('user.index')}}" class="btn btn-primary w-100 mb-2">Liệt kê User</a>
                 </div>
             </div>
         </div>
