@@ -3,8 +3,9 @@
 namespace App\Http\Controllers\Api\v1;
 
 use App\Http\Controllers\Controller;
+use App\Http\Resources\v1\CategoryCollection;
+use App\Http\Resources\v1\CategoryResource;
 use App\Models\CategoryPost;
-use App\Models\User;
 use Illuminate\Http\Request;
 
 class CategoryPostController extends Controller
@@ -16,9 +17,8 @@ class CategoryPostController extends Controller
      */
     public function index()
     {
-        $category = CategoryPost::all();
 
-        return view('layouts.category.index')->with(compact('category'));
+        return CategoryPost::all();
     }
 
     /**
@@ -28,7 +28,6 @@ class CategoryPostController extends Controller
      */
     public function create()
     {
-        return view('layouts.category.create');
     }
 
     /**
@@ -39,10 +38,11 @@ class CategoryPostController extends Controller
      */
     public function store(Request $request)
     {
-        $category = new CategoryPost();
-        $category->title = $request->title;
-        $category->save();
-        return redirect()->route('category.index')->with('success', 'Category Add Successfully');
+        $request->validate([
+            'title' => 'required',
+        ]);
+        $category = CategoryPost::create($request->all());
+        return new CategoryResource($category);
     }
 
     /**
@@ -51,11 +51,10 @@ class CategoryPostController extends Controller
      * @param  \App\Models\CategoryPost  $categoryPost
      * @return \Illuminate\Http\Response
      */
-    public function show($categoryPost)
-    {
-        $category = CategoryPost::find($categoryPost);
+    public function show($idcategoryPost)
 
-        return view('layouts.category.show')->with(compact('category'));
+    {
+        return CategoryPost::find($idcategoryPost);
     }
 
     /**
@@ -76,13 +75,15 @@ class CategoryPostController extends Controller
      * @param  \App\Models\CategoryPost  $categoryPost
      * @return \Illuminate\Http\Response
      */
-    public function update(Request $request, $categoryPost)
+    public function update(Request $request, $idcategoryPost)
     {
-        $data = $request->all();
-        $category = CategoryPost::find($categoryPost);
-        $category->title = $data['title'];
-        $category->save();
-        return redirect()->route('category.index')->with('success', 'Category Updated Successfully');
+        // $category = CategoryPost::find($categoryPost);
+        // if (empty($category)) {
+        //     return response()->json(['data' => []]);
+        // }
+        $category = CategoryPost::findOrFail($idcategoryPost);
+        $category->update($request->all());
+        return $category;
     }
 
     /**
@@ -91,10 +92,10 @@ class CategoryPostController extends Controller
      * @param  \App\Models\CategoryPost  $categoryPost
      * @return \Illuminate\Http\Response
      */
-    public function destroy($categoryPost)
+    public function destroy(Request $request, $idcategoryPost)
     {
-        $category = CategoryPost::find($categoryPost);
+        $category = CategoryPost::findOrFail($idcategoryPost);
         $category->delete();
-        return redirect()->back();
+        return 204;
     }
 }

@@ -24,5 +24,5 @@ Route::prefix('v1')->group(function () {
 });
 Route::prefix('v2')->group(function () {
     // Route::resource('User', 'App\Http\Controllers\Api\v2\UserController')->only(['show']);
-    Route::get('/User', 'App\Http\Controllers\Api\v2\UserController@show');
+    Route::get('/user', 'App\Http\Controllers\Api\v2\UserController@show');
 });

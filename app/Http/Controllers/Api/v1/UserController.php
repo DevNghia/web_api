@@ -16,8 +16,7 @@ class UserController extends Controller
      */
     public function index()
     {
-        $user = User::all();
-        return view('layouts.user.index')->with(compact('user'));
+        return User::all();
     }
     /**
      * Show the form for creating a new resource.
@@ -37,7 +36,11 @@ class UserController extends Controller
      */
     public function store(Request $request)
     {
-        //
+        $request->validate([
+            'name' => 'required',
+            'email' => 'required'
+        ]);
+        return User::create($request->all());
     }
 
     /**
@@ -48,9 +51,7 @@ class UserController extends Controller
      */
     public function show($user)
     {
-        $users = User::find($user);
-
-        return view('layouts.user.show')->with(compact('users'));
+        return User::find($user);
     }
 
     /**
@@ -71,14 +72,11 @@ class UserController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function update(Request $request, $user)
+    public function update(Request $request, $iduser)
     {
-        $data = $request->all();
-        $users = User::find($user);
-        $users->name = $data['name'];
-        $users->email = $data['email'];
-        $users->save();
-        return redirect()->route('user.index')->with('success', 'User Updated Successfully');
+        $user = User::findOrFail($iduser);
+        $user->update($request->all());
+        return $user;
     }
 
     /**
@@ -87,10 +85,10 @@ class UserController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function destroy($user)
+    public function destroy($iduser)
     {
-        $users =  User::find($user);
-        $users->delete();
-        return redirect()->back();
+        $user = User::findOrFail($iduser);
+        $user->delete();
+        return 204;
     }
 }
