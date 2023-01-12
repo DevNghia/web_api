@@ -18,7 +18,7 @@ class CategoryPostController extends Controller
     public function index()
     {
 
-        return CategoryPost::all();
+        return new CategoryCollection(CategoryPost::paginate(2));
     }
 
     /**
@@ -26,9 +26,6 @@ class CategoryPostController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
-    public function create()
-    {
-    }
 
     /**
      * Store a newly created resource in storage.
@@ -42,6 +39,7 @@ class CategoryPostController extends Controller
             'title' => 'required',
         ]);
         $category = CategoryPost::create($request->all());
+
         return new CategoryResource($category);
     }
 
@@ -54,6 +52,8 @@ class CategoryPostController extends Controller
     public function show($idcategoryPost)
 
     {
+
+
         return CategoryPost::find($idcategoryPost);
     }
 
@@ -63,10 +63,6 @@ class CategoryPostController extends Controller
      * @param  \App\Models\CategoryPost  $categoryPost
      * @return \Illuminate\Http\Response
      */
-    public function edit(CategoryPost $categoryPost)
-    {
-        //
-    }
 
     /**
      * Update the specified resource in storage.
@@ -77,10 +73,10 @@ class CategoryPostController extends Controller
      */
     public function update(Request $request, $idcategoryPost)
     {
-        // $category = CategoryPost::find($categoryPost);
-        // if (empty($category)) {
-        //     return response()->json(['data' => []]);
-        // }
+        $category = CategoryPost::find($idcategoryPost);
+        if (empty($category)) {
+            return response()->json(['data' => []]);
+        }
         $category = CategoryPost::findOrFail($idcategoryPost);
         $category->update($request->all());
         return $category;
@@ -96,6 +92,5 @@ class CategoryPostController extends Controller
     {
         $category = CategoryPost::findOrFail($idcategoryPost);
         $category->delete();
-        return 204;
     }
 }
