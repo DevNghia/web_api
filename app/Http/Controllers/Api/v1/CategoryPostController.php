@@ -49,12 +49,25 @@ class CategoryPostController extends Controller
      * @param  \App\Models\CategoryPost  $categoryPost
      * @return \Illuminate\Http\Response
      */
-    public function show($idcategoryPost)
+    public function show($categoryPost)
 
     {
+        $category = CategoryPost::find($categoryPost);
 
-
-        return CategoryPost::find($idcategoryPost);
+        if (!$category) {
+            return response()->json([
+                'code' => '404',
+                'message' => 'Not Found',
+                'data' => [],
+            ], 404);
+        } else {
+            $category = new CategoryResource($category);
+            return response()->json([
+                'code' => '200',
+                'message' => 'success',
+                'data' => $category,
+            ], 200);
+        }
     }
 
     /**
