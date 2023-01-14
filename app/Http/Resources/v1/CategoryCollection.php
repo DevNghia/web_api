@@ -13,8 +13,6 @@ class CategoryCollection extends ResourceCollection
      * @return array|\Illuminate\Contracts\Support\Arrayable|\JsonSerializable
      */
     private $pagination;
-    private $code;
-    private $message;
     public function __construct($resource)
     {
         $this->pagination = [
@@ -23,8 +21,6 @@ class CategoryCollection extends ResourceCollection
             'current' => $resource->currentPage(),
             'total_pages' => $resource->lastPage(),
         ];
-        $this->code = '200';
-        $this->message = 'success';
         $resource = $resource->getCollection(); // Necessary to remove meta and links
 
         parent::__construct($resource);
@@ -32,11 +28,19 @@ class CategoryCollection extends ResourceCollection
 
     public function toArray($request)
     {
-        return [
-            'code' => $this->code,
-            'message' => $this->message,
-            'data' => $this->collection,
-            'pagination' => $this->pagination,
-        ];
+        if ($this->collection != null) {
+            return [
+                'code' => '200',
+                'message' => 'success',
+                'data' => $this->collection,
+                'pagination' => $this->pagination,
+            ];
+        } else {
+            return [
+                'code' => '404',
+                'message' => 'not found',
+                'data' => $this->collection,
+            ];
+        }
     }
 }

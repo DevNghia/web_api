@@ -54,20 +54,7 @@ class CategoryPostController extends Controller
     {
         $category = CategoryPost::find($categoryPost);
 
-        if (!$category) {
-            return response()->json([
-                'code' => '404',
-                'message' => 'Not Found',
-                'data' => [],
-            ], 404);
-        } else {
-            $category = new CategoryResource($category);
-            return response()->json([
-                'code' => '200',
-                'message' => 'success',
-                'data' => $category,
-            ], 200);
-        }
+        return new CategoryResource($category);
     }
 
     /**
@@ -92,7 +79,7 @@ class CategoryPostController extends Controller
         }
         $category = CategoryPost::findOrFail($idcategoryPost);
         $category->update($request->all());
-        return $category;
+        return new CategoryResource($category);
     }
 
     /**
@@ -105,5 +92,6 @@ class CategoryPostController extends Controller
     {
         $category = CategoryPost::findOrFail($idcategoryPost);
         $category->delete();
+        return new CategoryResource($category);
     }
 }
