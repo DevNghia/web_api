@@ -40,7 +40,7 @@ class CategoryPostController extends Controller
         ]);
         $category = CategoryPost::create($request->all());
 
-        return new CategoryResource($category);
+        return response()->json($category, 201);
     }
 
     /**
@@ -79,7 +79,7 @@ class CategoryPostController extends Controller
         }
         $category = CategoryPost::findOrFail($idcategoryPost);
         $category->update($request->all());
-        return new CategoryResource($category);
+        return response()->json($category, 200);;
     }
 
     /**
@@ -92,6 +92,6 @@ class CategoryPostController extends Controller
     {
         $category = CategoryPost::findOrFail($idcategoryPost);
         $category->delete();
-        return new CategoryResource($category);
+        return response()->json(null, 204);
     }
 }
