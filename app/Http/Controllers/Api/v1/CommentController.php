@@ -2,12 +2,12 @@
 
 namespace App\Http\Controllers\Api\v1;
 
-use App\Http\Controllers\Controller;
 use App\Http\Resources\v1\Collection;
-use App\Models\Post;
+use App\Http\Controllers\Controller;
+use App\Models\Comment;
 use Illuminate\Http\Request;
 
-class PostController extends Controller
+class CommentController extends Controller
 {
     /**
      * Display a listing of the resource.
@@ -16,9 +16,8 @@ class PostController extends Controller
      */
     public function index()
     {
-
-        $post = Post::paginate(2);
-        return new Collection($post);
+        $comment = Comment::paginate(2);
+        return new Collection($comment);
     }
 
 
@@ -32,65 +31,67 @@ class PostController extends Controller
     {
         $request->validate([
             'content' => 'required',
-            'cate_id' => 'required',
-            'post_id' => 'required'
+            'post_id' => 'required',
+            'reader_id' => 'required'
         ]);
-        $post = Post::create($request->all());
-        if (!$post) {
+        $comment = Comment::create($request->all());
+        if (!$comment) {
             return response()->forbidden('Access denied. Kindly contact administrator.');
         }
-        return response()->created($post);
+        return response()->created($comment);
     }
 
     /**
      * Display the specified resource.
      *
-     * @param  \App\Models\Post  $post
+     * @param  \App\Models\Comment  $comment
      * @return \Illuminate\Http\Response
      */
-    public function show($postID)
+    public function show($commentId)
+
     {
-        $post = Post::find($postID);
-        if (empty($post)) {
+        $comment = Comment::find($commentId);
+        if (empty($comment)) {
             return response()->notFound();
         }
-        $posts = Post::with('comments')->find($postID);
-        return response()->ok($posts);
+
+        return response()->ok($comment);
     }
+
 
 
     /**
      * Update the specified resource in storage.
      *
      * @param  \Illuminate\Http\Request  $request
-     * @param  \App\Models\Post  $post
+     * @param  \App\Models\Comment  $comment
      * @return \Illuminate\Http\Response
      */
-    public function update(Request $request, $postID)
+    public function update(Request $request, $commentID)
     {
-        $post = Post::find($postID);
-        if (empty($post)) {
+        $comment = Comment::find($commentID);
+        if (empty($comment)) {
             return response()->forbidden('Access denied. Kindly contact administrator.');
         }
         $request->validate([
             'content' => 'required',
-            'cate_id' => 'required',
-            'post_id' => 'required'
+            'post_id' => 'required',
+            'reader_id' => 'required'
         ]);
-        $post->update($request->all());
-        return response()->ok($post);
+        $comment->update($request->all());
+        return response()->ok($comment);
     }
 
     /**
      * Remove the specified resource from storage.
      *
-     * @param  \App\Models\Post  $post
+     * @param  \App\Models\Comment  $comment
      * @return \Illuminate\Http\Response
      */
-    public function destroy($postID)
+    public function destroy($commentID)
     {
-        $post = Post::findOrFail($postID);
-        $post->delete();
+        $comment = Comment::findOrFail($commentID);
+        $comment->delete();
         return response()->noContent();
     }
 }

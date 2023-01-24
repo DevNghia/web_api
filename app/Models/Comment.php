@@ -5,7 +5,7 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
-class Post extends Model
+class Comment extends Model
 {
     use HasFactory;
     public $timestamps = false;
@@ -13,13 +13,5 @@ class Post extends Model
         'content'
     ];
     protected $primaryKey = "id";
-    protected $table = 'posts';
-    public function reader()
-    {
-        return $this->belongsTo(Reader::class);
-    }
-    public function comments()
-    {
-        return $this->hasMany(Comment::class);
-    }
+    protected $table = 'comments';
 }

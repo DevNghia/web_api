@@ -3,8 +3,7 @@
 namespace App\Http\Controllers\Api\v1;
 
 use App\Http\Controllers\Controller;
-use App\Http\Resources\v1\CategoryCollection;
-use App\Http\Resources\v1\CategoryResource;
+use App\Http\Resources\v1\Collection;
 use App\Models\CategoryPost;
 use Illuminate\Http\Request;
 
@@ -18,7 +17,8 @@ class CategoryPostController extends Controller
     public function index()
     {
 
-        return new CategoryCollection(CategoryPost::paginate(2));
+        $category = CategoryPost::paginate(2);
+        return new Collection($category);
     }
 
     /**
@@ -39,8 +39,10 @@ class CategoryPostController extends Controller
             'title' => 'required',
         ]);
         $category = CategoryPost::create($request->all());
-
-        return response()->json($category, 201);
+        if (!$category) {
+            return response()->forbidden('Access denied. Kindly contact administrator.');
+        }
+        return response()->created($category);
     }
 
     /**
@@ -52,9 +54,12 @@ class CategoryPostController extends Controller
     public function show($categoryPost)
 
     {
-        $category = CategoryPost::find($categoryPost);
+        $category = CategoryPost::find($categoryPost);;
+        if (empty($category)) {
+            return response()->notFound();
+        }
 
-        return new CategoryResource($category);
+        return response()->ok($category);
     }
 
     /**
@@ -75,11 +80,13 @@ class CategoryPostController extends Controller
     {
         $category = CategoryPost::find($idcategoryPost);
         if (empty($category)) {
-            return response()->json(['data' => []]);
+            return response()->forbidden('Access denied. Kindly contact administrator.');
         }
-        $category = CategoryPost::findOrFail($idcategoryPost);
+        $request->validate([
+            'title' => 'required',
+        ]);
         $category->update($request->all());
-        return response()->json($category, 200);;
+        return response()->ok($category);
     }
 
     /**
@@ -92,6 +99,6 @@ class CategoryPostController extends Controller
     {
         $category = CategoryPost::findOrFail($idcategoryPost);
         $category->delete();
-        return response()->json(null, 204);
+        return response()->noContent();
     }
 }

@@ -15,11 +15,11 @@ return new class extends Migration
     {
         Schema::create('posts', function (Blueprint $table) {
             $table->bigIncrements('id');
-            $table->string('title', 200);
-            $table->string('short_desc', 255);
-            $table->string('desc', 255);
-            $table->string('image', 255);
-            $table->string('post_category_id', 255);
+            $table->string('content');
+            $table->unsignedBigInteger('cate_id');
+            $table->foreign('cate_id')->references('id')->on('category_posts')->onDelete('cascade');
+            $table->unsignedBigInteger('poster_id');
+            $table->foreign('poster_id')->references('id')->on('posters')->onDelete('cascade');
             $table->timestamps();
         });
     }
