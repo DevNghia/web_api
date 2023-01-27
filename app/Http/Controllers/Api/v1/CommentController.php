@@ -7,6 +7,7 @@ use App\Http\Controllers\Controller;
 use App\Models\Comment;
 use Illuminate\Http\Request;
 
+const pageSize = 2;
 class CommentController extends Controller
 {
     /**
@@ -16,7 +17,7 @@ class CommentController extends Controller
      */
     public function index()
     {
-        $comment = Comment::paginate(2);
+        $comment = Comment::paginate(pageSize);
         return new Collection($comment);
     }
 
@@ -30,9 +31,9 @@ class CommentController extends Controller
     public function store(Request $request)
     {
         $request->validate([
-            'content' => 'required',
-            'post_id' => 'required',
-            'reader_id' => 'required'
+            'content' => 'required|max:255',
+            'post_id' => 'required|numeric',
+            'reader_id' => 'required|numeric'
         ]);
         $comment = Comment::create($request->all());
         if (!$comment) {
@@ -74,9 +75,9 @@ class CommentController extends Controller
             return response()->forbidden('Access denied. Kindly contact administrator.');
         }
         $request->validate([
-            'content' => 'required',
-            'post_id' => 'required',
-            'reader_id' => 'required'
+            'content' => 'required|max:255',
+            'post_id' => 'required|numeric',
+            'reader_id' => 'required|numeric'
         ]);
         $comment->update($request->all());
         return response()->ok($comment);
@@ -91,6 +92,9 @@ class CommentController extends Controller
     public function destroy($commentID)
     {
         $comment = Comment::findOrFail($commentID);
+        if (empty($comment)) {
+            return response()->notFound();
+        }
         $comment->delete();
         return response()->noContent();
     }

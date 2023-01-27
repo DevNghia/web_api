@@ -7,6 +7,7 @@ use App\Http\Resources\v1\Collection;
 use App\Models\CategoryPost;
 use Illuminate\Http\Request;
 
+const pageSize = 2;
 class CategoryPostController extends Controller
 {
     /**
@@ -17,7 +18,7 @@ class CategoryPostController extends Controller
     public function index()
     {
 
-        $category = CategoryPost::paginate(2);
+        $category = CategoryPost::paginate(pageSize);
         return new Collection($category);
     }
 
@@ -36,7 +37,7 @@ class CategoryPostController extends Controller
     public function store(Request $request)
     {
         $request->validate([
-            'title' => 'required',
+            'title' => 'required|max:255',
         ]);
         $category = CategoryPost::create($request->all());
         if (!$category) {
@@ -83,7 +84,7 @@ class CategoryPostController extends Controller
             return response()->forbidden('Access denied. Kindly contact administrator.');
         }
         $request->validate([
-            'title' => 'required',
+            'title' => 'required|max:255',
         ]);
         $category->update($request->all());
         return response()->ok($category);
@@ -98,6 +99,9 @@ class CategoryPostController extends Controller
     public function destroy(Request $request, $idcategoryPost)
     {
         $category = CategoryPost::findOrFail($idcategoryPost);
+        if (empty($category)) {
+            return response()->notFound();
+        }
         $category->delete();
         return response()->noContent();
     }

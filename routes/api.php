@@ -19,10 +19,10 @@ Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
 });
 
 Route::prefix('v1')->group(function () {
-    Route::resource('/user', 'App\Http\Controllers\Api\v1\UserController');
-    Route::resource('/category', 'App\Http\Controllers\Api\v1\CategoryPostController');
-    Route::resource('/comment', 'App\Http\Controllers\Api\v1\CommentController');
-    Route::resource('/post', 'App\Http\Controllers\Api\v1\PostController');
+    Route::resource('/user', UserController::class);
+    Route::resource('/category', CategoryPostController::class);
+    Route::resource('/comment', CommentController::class);
+    Route::resource('/post', PostController::class);
 });
 Route::prefix('v2')->group(function () {
     // Route::resource('User', 'App\Http\Controllers\Api\v2\UserController')->only(['show']);

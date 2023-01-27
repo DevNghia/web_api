@@ -7,6 +7,7 @@ use App\Http\Resources\v1\Collection;
 use App\Models\Post;
 use Illuminate\Http\Request;
 
+const pageSize = 2;
 class PostController extends Controller
 {
     /**
@@ -17,7 +18,7 @@ class PostController extends Controller
     public function index()
     {
 
-        $post = Post::paginate(2);
+        $post = Post::paginate(pageSize);
         return new Collection($post);
     }
 
@@ -31,9 +32,9 @@ class PostController extends Controller
     public function store(Request $request)
     {
         $request->validate([
-            'content' => 'required',
-            'cate_id' => 'required',
-            'post_id' => 'required'
+            'content' => 'required|max:255',
+            'cate_id' => 'required|numeric',
+            'post_id' => 'required|numeric'
         ]);
         $post = Post::create($request->all());
         if (!$post) {
@@ -73,9 +74,9 @@ class PostController extends Controller
             return response()->forbidden('Access denied. Kindly contact administrator.');
         }
         $request->validate([
-            'content' => 'required',
-            'cate_id' => 'required',
-            'post_id' => 'required'
+            'content' => 'required|max:255',
+            'cate_id' => 'required|numeric',
+            'post_id' => 'required|numeric'
         ]);
         $post->update($request->all());
         return response()->ok($post);
@@ -90,6 +91,9 @@ class PostController extends Controller
     public function destroy($postID)
     {
         $post = Post::findOrFail($postID);
+        if (empty($post)) {
+            return response()->notFound();
+        }
         $post->delete();
         return response()->noContent();
     }

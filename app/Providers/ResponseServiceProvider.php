@@ -59,6 +59,8 @@ class ResponseServiceProvider extends ServiceProvider
             ], 204);
         });
 
+
+
         Response::macro('badRequest', function ($message = 'Validation Failure', $errors = []) use ($instance) {
             return $instance->handleErrorResponse($message, $errors, 400);
         });

@@ -7,5 +7,4 @@ use Illuminate\Database\Eloquent\Model;
 
 class Poster extends Model
 {
-    use HasFactory;
 }
